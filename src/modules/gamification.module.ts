@@ -23,14 +23,14 @@ export class GamificationModule {
   /**
    * Use in AppModule: new instance of GamificationService.
    */
-  public static forRoot(config: any): ModuleWithProviders {
+  public static forRoot(config?: any): ModuleWithProviders {
     return {
       ngModule: GamificationModule,
       providers: [
-        GamificationService,
-        // {
-        //   provide: GamificationService, useValue: config, useClass: GamificationService
-        // }
+        // GamificationService,
+        {
+          provide: GamificationService, useValue: config, useClass: GamificationService
+        }
       ]
     };
   }
@@ -38,10 +38,15 @@ export class GamificationModule {
   /**
    * Use in features modules with lazy loading: new instance of GamificationService.
    */
-  public static forChild(): ModuleWithProviders {
+  public static forChild(config?: any): ModuleWithProviders {
     return {
       ngModule: GamificationModule,
-      providers: [GamificationService]
+      providers: [
+        // GamificationService,
+        {
+          provide: GamificationService, useValue: config, useClass: GamificationService
+        }
+      ]
     };
   }
 
