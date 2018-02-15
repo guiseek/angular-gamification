@@ -1,0 +1,10 @@
+$ cat .gitignore
+/node_modules
+/dist
+/documentation
+/docs
+/coverage
+/demo
+
+*.log
+*.tgz

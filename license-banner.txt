@@ -1,0 +1,4 @@
+/**
+ * @license angular-gamification
+ * MIT license
+ */
