@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { MissionService } from './mission.service';
 import { ProgressBarService } from './progress-bar.service';
 import { BreakpointService } from './breakpoint.service';
@@ -7,14 +7,18 @@ import { Level } from '../interface/level.interface';
 @Injectable()
 export class GamificationService {
   public points: number = 0;
-  public levels: Array<Level>;
+  public levels: Array<Level> = [];
   public level: Level;
   public breakpoints = Array<BreakpointService>();
   public missions = Array<MissionService>();
   public components = Array<ProgressBarService>();
-  constructor() {
-    this.levels = [];
-    this.level = this.levels[0];
+  constructor(@Inject('config') private config :any) {
+    // console.log('config: ', config);
+    this.levels = config.levels || this.levels,
+    this.level = config.level || this.levels[0],
+    this.points = config.points || this.points
+    // this.levels = [];
+    // this.level = this.levels[0];
   }
   addComponent(points: number, updateFn?: Function, startFn?: Function) {
     const component = new ProgressBarService(points, updateFn, startFn);
@@ -61,7 +65,7 @@ export class GamificationService {
   setLevels(levels: Level[]) {
     this.levels = levels;
   }
-  getLevels() {
+  getLevels(): Level[] {
     return this.levels;
   }
   addLevel(level: Level) {
@@ -74,8 +78,10 @@ export class GamificationService {
     return this.level;
   }
   getLevelByPoints(points: number) {
-    return this.getLevels().map(level => level).filter(level => {
-      return (level.range.min <= points) && (level.range.max >= points);
+    return this.getLevels().filter(level => {
+      if (level.range) {
+        return (level.range.min <= points) && (level.range.max >= points);
+      }
     }, this.setLevel)[0];
   }
   achieveMission(name: string) {

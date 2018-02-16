@@ -348,10 +348,13 @@ export class GamificationModule {
     return {
       ngModule: GamificationModule,
       providers: [
-        // GamificationService,
+        GamificationService,
         {
-          provide: GamificationService, useValue: config, useClass: GamificationService
+          provide: &#x27;config&#x27;, useValue: config
         }
+        // {
+        //   provide: GamificationService, useValue: config, useClass: GamificationModule.forRoot(config)
+        // }
       ]
     };
   }
@@ -363,10 +366,14 @@ export class GamificationModule {
     return {
       ngModule: GamificationModule,
       providers: [
-        // GamificationService,
+        GamificationService,
         {
-          provide: GamificationService, useValue: config, useClass: GamificationService
+          provide: &#x27;config&#x27;, useValue: config
         }
+        // GamificationService,
+        // {
+        //   provide: GamificationService, useValue: config, useClass: GamificationService
+        // }
       ]
     };
   }

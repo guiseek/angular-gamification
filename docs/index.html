@@ -290,9 +290,154 @@
 <p>Get the <a href="https://github.com/guiseek/angular-gamification/blob/master/CHANGELOG.md">Changelog</a>.</p>
 <h2 id="contents">Contents</h2>
 <ul>
-<li><a href="#1">1 Testing</a></li>
+<li><a href="#1">1 Demo / Live Example</a></li>
+<li><a href="#2">2 Using the library</a></li>
+<li><a href="#3">3 Documentation</a></li>
+<li><a href="#4">4 Testing</a></li>
 </ul>
-<h2 id="-a-name-1-a-1-testing"><a name="1"></a>1 Testing</h2>
+<h2 id="-a-name-1-a-1-demo-live-example"><a name="1"></a>1 Demo / Live Example</h2>
+<p>Demo: <a href="http://guiseek.js.org/angular-gamification-demo/">Live Example</a></p>
+<h2 id="-a-name-2-a-2-using-the-library"><a name="2"></a>2 Using the library</h2>
+<h3 id="installing">Installing</h3>
+<pre class="line-numbers"><code class="language-Shell">npm i angular-gamification --save</code></pre><h3 id="loading">Loading</h3>
+<h4 id="using-module-configuration-app-module-ts-">Using Module configuration (app.module.ts)</h4>
+<pre class="line-numbers"><code class="language-JavaScript">import { GamificationModule } from &#39;angular-gamification&#39;;
+
+const levels = [
+  { badge: &#39;BEGINNER&#39;, icon: &#39;./../assets/badges/BEGINNER.svg&#39;, range: { min: 1, max: 99 } },
+  { badge: &#39;NICE&#39;, icon: &#39;./../assets/badges/NICE.svg&#39;, range: { min: 100, max: 199 } },
+  { badge: &#39;USUAL&#39;, icon: &#39;./../assets/badges/USUAL.svg&#39;, range: { min: 200, max: 299 } },
+  { badge: &#39;CONSTANT&#39;, icon: &#39;./../assets/badges/CONSTANT.svg&#39;, range: { min: 300, max: 399 } },
+  { badge: &#39;VIP&#39;, icon: &#39;./../assets/badges/VIP.svg&#39;, range: { min: 400, max: 499 } },
+  { badge: &#39;NINJA&#39;, icon: &#39;./../assets/badges/NINJA.svg&#39;, range: { min: 500, max: 599 } },
+  { badge: &#39;POWER&#39;, icon: &#39;./../assets/badges/POWER.svg&#39;, range: { min: 600, max: 699 } },
+  { badge: &#39;PARTNER&#39;, icon: &#39;./../assets/badges/PARTNER.svg&#39;, range: { min: 700, max: 799 } },
+  { badge: &#39;LORD&#39;, icon: &#39;./../assets/badges/LORD.svg&#39;, range: { min: 800, max: 899 } },
+  { badge: &#39;KING&#39;, icon: &#39;./../assets/badges/KING.svg&#39;, range: { min: 900, max: 999 } }
+];
+const config = {
+  levels: levels
+};
+&#64;NgModules({
+    ...,
+    GamificationModule.forRoot(config)
+})</code></pre><h4 id="using-component-configuration-app-component-ts-">Using component configuration (app.component.ts)</h4>
+<pre class="line-numbers"><code class="language-JavaScript">import { Component } from &#39;&#64;angular/core&#39;;
+import { GamificationService } from &#39;angular-gamification&#39;
+
+&#64;Component({
+  selector: &#39;app-root&#39;,
+  templateUrl: &#39;./app.component.html&#39;,
+  styleUrls: [&#39;./app.component.css&#39;]
+})
+export class AppComponent {
+  title = &#39;Tour of Heroes&#39;;
+  public user;
+  public progress;
+  constructor(public gamification: GamificationService) {
+    this.user = {
+      name: &#39;Gui&#39;,
+      points: 0,
+      level: {}
+    };
+    this.progress = {
+      max: 0,
+      value: 0
+    };
+    this.initGamefication();
+  }
+  initGamefication() {
+    console.log(&#39;gamification: &#39;, this.gamification);
+    this.gamification.addBreakpoint(100, () =&gt; {
+      console.log(&#39;breakpoint 100 callback: &#39;, this.gamification.getPoints());
+    });
+    this.gamification.addBreakpoint(200, () =&gt; {
+      console.log(&#39;breakpoint 200 callback: &#39;, this.gamification.getPoints());
+    });
+    this.gamification.addBreakpoint(300, () =&gt; {
+      console.log(&#39;breakpoint 300 callback: &#39;, this.gamification.getPoints());
+    });
+    this.gamification.addBreakpoint(300, () =&gt; {
+      console.log(&#39;breakpoint 400 callback: &#39;, this.gamification.getPoints());
+    });
+
+    let component = this.gamification.addComponent(400, () =&gt; {
+      console.info(&#39;component update callback&#39;);
+      let points = this.gamification.getPoints();
+      this.gamification.getLevelByPoints(points);
+      this.user.points = points;
+      this.user.level = this.gamification.getLevel();
+      this.progress.value = points;
+    }, () =&gt; {
+      console.log(&#39;component 400 start callback&#39;);
+      this.progress.max = 400;
+      this.user.level = this.gamification.getLevel();
+    });
+    this.gamification.addMission(&#39;add&#39;, 50, () =&gt; {
+      console.log(&#39;add mission start&#39;);
+    }, () =&gt; {
+      console.log(&#39;add mission achieve: &#39;, this.gamification.getPoints());
+    });
+    this.gamification.addMission(&#39;save&#39;, 30, () =&gt; {
+      console.log(&#39;save mission start&#39;);
+    }, () =&gt; {
+      console.log(&#39;save mission achieve: &#39;, this.gamification.getPoints());
+    });
+    this.gamification.addMission(&#39;delete&#39;, 10, () =&gt; {
+      console.log(&#39;delete mission start&#39;);
+    }, () =&gt; {
+      console.log(&#39;delete mission achieve: &#39;, this.gamification.getPoints());
+    });
+  }
+}</code></pre><h4 id="using-component-mission-heroes-component-ts-">Using Component mission (heroes.component.ts)</h4>
+<pre class="line-numbers"><code class="language-JavaScript">import { Component, OnInit } from &#39;&#64;angular/core&#39;;
+
+import { Hero } from &#39;../hero&#39;;
+import { HeroService } from &#39;../hero.service&#39;;
+
+import { GamificationService } from &#39;angular-gamification&#39;;
+
+&#64;Component({
+  selector: &#39;app-heroes&#39;,
+  templateUrl: &#39;./heroes.component.html&#39;,
+  styleUrls: [&#39;./heroes.component.css&#39;]
+})
+export class HeroesComponent implements OnInit {
+  heroes: Hero[];
+
+  constructor(
+    private heroService: HeroService,
+    public gamification: GamificationService
+  ) { }
+
+  ngOnInit() {
+    this.getHeroes();
+  }
+
+  getHeroes(): void {
+    this.heroService.getHeroes()
+    .subscribe(heroes =&gt; this.heroes = heroes);
+  }
+
+  add(name: string): void {
+    name = name.trim();
+    if (!name) { return; }
+    this.heroService.addHero({ name } as Hero)
+      .subscribe(hero =&gt; {
+        this.heroes.push(hero);
+        this.gamification.achieveMission(&#39;add&#39;);
+      });
+  }
+
+  delete(hero: Hero): void {
+    this.heroes = this.heroes.filter(h =&gt; h !== hero);
+    this.heroService.deleteHero(hero).subscribe(() =&gt; {
+      this.gamification.achieveMission(&#39;delete&#39;);
+    });
+  }
+}</code></pre><h2 id="-a-name-3-a-3-documentation"><a name="3"></a>3 Documentation</h2>
+<p><a href="http://guiseek.js.org/angular-gamification/">Documentation</a></p>
+<h2 id="-a-name-4-a-4-testing"><a name="4"></a>4 Testing</h2>
 <p>The following command runs unit &amp; integration tests that are in the <code>tests</code> folder (you can change the folder in <code>spec.bundle.js</code> file):</p>
 <pre class="line-numbers"><code class="language-Shell">npm test</code></pre><p>It also reports coverage using <em>Istanbul</em>.</p>
 <h2 id="license">License</h2>

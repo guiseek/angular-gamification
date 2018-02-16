@@ -1,7 +1,7 @@
 export interface Level {
   badge: string
   icon?: string
-  range: {
+  range?: {
     min: number
     max: number
   }

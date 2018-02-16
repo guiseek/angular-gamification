@@ -1,7 +1,7 @@
 {
     "name": "angular-gamification",
     "private": false,
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Improve the interaction of your users with your application using gamification",
     "main": "./bundles/angular-gamification.umd.js",
     "module": "./esm5/angular-gamification.js",
@@ -16,7 +16,7 @@
         "compodoc:serve": "compodoc -s -d ./docs"
     },
     "typings": "./angular-gamification.d.ts",
-    "author": "",
+    "author": "Gui Seek <guiseek@gmail.com>",
     "repository": {
         "type": "git",
         "url": "https://github.com/guiseek/angular-gamification.git"
