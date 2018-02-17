@@ -22,8 +22,6 @@ before_script:
   - sleep 3
 notifications:
   email: false
-before_deploy:
-  - npm run pack:lib
 deploy:
   provider: npm
   email: "guiseek@gmail.com"
