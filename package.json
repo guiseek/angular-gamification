@@ -1,7 +1,7 @@
 {
     "name": "angular-gamification",
     "private": false,
-    "version": "1.0.0",
+    "version": "0.0.5",
     "description": "Improve the interaction of your users with your application using gamification",
     "main": "./bundles/angular-gamification.umd.js",
     "module": "./esm5/angular-gamification.js",
