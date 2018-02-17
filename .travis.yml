@@ -28,3 +28,6 @@ deploy:
   provider: npm
   email: guiseek@gmail.com
   api_key: $NPM_TOKEN
+  tag: next
+  on:
+    branch: master
