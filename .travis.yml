@@ -23,7 +23,7 @@ before_script:
 notifications:
   email: false
 before_deploy:
-  - npm run pack:lib
+  - npm run build
 deploy:
   provider: npm
   email: "guiseek@gmail.com"

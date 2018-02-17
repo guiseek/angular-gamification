@@ -1,14 +1,11 @@
 {
     "name": "angular-gamification",
     "private": false,
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "Improve the interaction of your users with your application using gamification",
     "main": "./bundles/angular-gamification.umd.js",
     "module": "./esm5/angular-gamification.js",
     "es2015": "./esm2015/angular-gamification.js",
-    "files": [
-        "dist"
-    ],
     "scripts": {
         "build": "node build.js",
         "test": "karma start",
