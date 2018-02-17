@@ -23,10 +23,11 @@ before_script:
 notifications:
   email: false
 before_deploy:
-  - npm run publish:lib
+  - npm run pack:lib
 deploy:
   provider: npm
-  email: guiseek@gmail.com
-  api_key: $NPM_TOKEN
+  email: "guiseek@gmail.com"
+  api_key: "$NPM_TOKEN"
+  skip_cleanup: true
   on:
     branch: master
