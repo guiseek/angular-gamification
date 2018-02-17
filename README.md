@@ -38,12 +38,12 @@ const levels = [
   { badge: 'LORD', icon: './../assets/badges/LORD.svg', range: { min: 800, max: 899 } },
   { badge: 'KING', icon: './../assets/badges/KING.svg', range: { min: 900, max: 999 } }
 ];
-const config = {
+const GamificationConfig = {
   levels: levels
 };
 @NgModules({
     ...,
-    GamificationModule.forRoot(config)
+    GamificationModule.forRoot(GamificationConfig)
 })
 ```
 
@@ -61,6 +61,8 @@ export class AppComponent {
   title = 'Tour of Heroes';
   public user;
   public progress;
+  public reports;
+  public report: Report[];
   constructor(public gamification: GamificationService) {
     this.user = {
       name: 'Gui',
@@ -71,10 +73,11 @@ export class AppComponent {
       max: 0,
       value: 0
     };
+    this.report;
     this.initGamefication();
   }
   initGamefication() {
-    console.log('gamification: ', this.gamification);
+    this.reports = this.gamification.getReports();
     this.gamification.addBreakpoint(100, () => {
       console.log('breakpoint 100 callback: ', this.gamification.getPoints());
     });
@@ -84,36 +87,38 @@ export class AppComponent {
     this.gamification.addBreakpoint(300, () => {
       console.log('breakpoint 300 callback: ', this.gamification.getPoints());
     });
-    this.gamification.addBreakpoint(300, () => {
+    this.gamification.addBreakpoint(400, () => {
       console.log('breakpoint 400 callback: ', this.gamification.getPoints());
     });
 
-    let component = this.gamification.addComponent(400, () => {
+    this.gamification.addComponent(400, () => {
       console.info('component update callback');
       let points = this.gamification.getPoints();
       this.gamification.getLevelByPoints(points);
       this.user.points = points;
       this.user.level = this.gamification.getLevel();
       this.progress.value = points;
-    }, () => {
+      let report = this.gamification.getReports();
+      console.info('component update callback report: ', report);
+    }, (maxPoints) => {
       console.log('component 400 start callback');
-      this.progress.max = 400;
+      this.progress.max = maxPoints;
       this.user.level = this.gamification.getLevel();
     });
-    this.gamification.addMission('add', 50, () => {
+    this.gamification.addMission('add', 50, 'User added', () => {
       console.log('add mission start');
-    }, () => {
-      console.log('add mission achieve: ', this.gamification.getPoints());
+    }, (report) => {
+      console.log('add mission achieve: ', report, this.gamification.getPoints());
     });
-    this.gamification.addMission('save', 30, () => {
+    this.gamification.addMission('save', 30, 'User saved', () => {
       console.log('save mission start');
-    }, () => {
-      console.log('save mission achieve: ', this.gamification.getPoints());
+    }, (report) => {
+      console.log('save mission achieve: ', report, this.gamification.getPoints());
     });
-    this.gamification.addMission('delete', 10, () => {
+    this.gamification.addMission('delete', 10, 'User deleted', () => {
       console.log('delete mission start');
-    }, () => {
-      console.log('delete mission achieve: ', this.gamification.getPoints());
+    }, (report) => {
+      console.log('delete mission achieve: ', report, this.gamification.getPoints());
     });
   }
 }

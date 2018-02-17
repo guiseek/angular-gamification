@@ -12,7 +12,7 @@ export class ProgressBarService {
     this.updateFn = updateFn || this.updateFn;
     this.startFn = startFn || this.startFn;
     this.isFull = false;
-    return this;
+    // return this;
   }
   public update(points: number) {
     if (!this.isFull) {
@@ -24,7 +24,7 @@ export class ProgressBarService {
     }
   }
   public start() {
-    this.startFn();
+    this.startFn(this.maxPoints);
   }
   public getProgress(points: number) {
     return Math.min(Math.max(Math.ceil(100 * points / this.maxPoints), 0), 100)

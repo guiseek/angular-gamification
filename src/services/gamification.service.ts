@@ -2,7 +2,9 @@ import { Injectable, Inject } from '@angular/core';
 import { MissionService } from './mission.service';
 import { ProgressBarService } from './progress-bar.service';
 import { BreakpointService } from './breakpoint.service';
+import { ReportService } from './report.service';
 import { Level } from '../interface/level.interface';
+import { Report } from '../interface/report.interface';
 
 @Injectable()
 export class GamificationService {
@@ -12,13 +14,11 @@ export class GamificationService {
   public breakpoints = Array<BreakpointService>();
   public missions = Array<MissionService>();
   public components = Array<ProgressBarService>();
-  constructor(@Inject('config') private config :any) {
-    // console.log('config: ', config);
-    this.levels = config.levels || this.levels,
-    this.level = config.level || this.levels[0],
-    this.points = config.points || this.points
-    // this.levels = [];
-    // this.level = this.levels[0];
+  public reportService = new ReportService();
+  constructor(@Inject('config') private config: any) {
+    this.levels = config.levels || this.levels;
+    this.level = config.level || this.levels[0];
+    this.points = config.points || this.points;
   }
   addComponent(points: number, updateFn?: Function, startFn?: Function) {
     const component = new ProgressBarService(points, updateFn, startFn);
@@ -29,8 +29,8 @@ export class GamificationService {
   getComponents() {
     return this.components;
   }
-  addMission(name: string, points: number, startFn?: Function, achieveFn?: Function) {
-    const mission = new MissionService(name, points, startFn, achieveFn);
+  addMission(name: string, points: number, description?: string, startFn?: Function, achieveFn?: Function) {
+    const mission = new MissionService(name, points, description, startFn, achieveFn);
     this.missions.push(mission);
     mission.start();
     return mission.name;
@@ -38,14 +38,14 @@ export class GamificationService {
   getMissions() {
     return this.missions;
   }
-  addBreakpoint(points: number, actionFn?: Function) {
+  addBreakpoint(points: number, actionFn?: Function): void {
     const breakpoint = new BreakpointService(points, actionFn);
     this.breakpoints.push(breakpoint);
   }
   getBreakpoints() {
     return this.breakpoints;
   }
-  addPoints(points: number) {
+  addPoints(points: number): void {
     this.points += points;
     this.breakpoints.forEach((breakpoint, index) => {
       if (((this.points - points) < this.breakpoints[index].pointsThreshold) && (this.breakpoints[index].pointsThreshold <= (this.points))) {
@@ -56,25 +56,25 @@ export class GamificationService {
       this.components[index].update(points);
     });
   }
-  getPoints() {
+  getPoints(): number {
     return this.points;
   }
-  setPoints(points: number) {
+  setPoints(points: number): void {
     this.points = points;
   }
-  setLevels(levels: Level[]) {
+  setLevels(levels: Level[]): void {
     this.levels = levels;
   }
   getLevels(): Level[] {
     return this.levels;
   }
-  addLevel(level: Level) {
+  addLevel(level: Level): void {
     this.levels.push(level);
   }
-  setLevel(level: Level) {
+  setLevel(level: Level): void {
     this.level = level;
   }
-  getLevel() {
+  getLevel(): Level {
     return this.level;
   }
   getLevelByPoints(points: number) {
@@ -84,11 +84,24 @@ export class GamificationService {
       }
     }, this.setLevel)[0];
   }
-  achieveMission(name: string) {
-    return this.missions.map((mission, index) => {
+  setReports(reports: Report[]) {
+    this.reportService.set(reports);
+  }
+  getReports(): Report[] {
+    return this.reportService.get();
+  }
+  clearReport(): void {
+    this.reportService.clear();
+  }
+  achieveMission(name: string): void {
+    this.missions.map((mission, index) => {
       if (mission.name === name) {
         this.addPoints(mission.points);
-        mission.achieve();
+        let report = this.reportService.add({
+          description: mission.description,
+          points: mission.points
+        });
+        mission.achieve(report);
       }
     });
   }
